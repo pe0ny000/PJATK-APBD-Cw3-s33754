@@ -1,1 +1,52 @@
 ﻿/LinqConsoleLab.PL.csproj
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache
+.vs/
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish output
+publish/
+
+# Azure
+*.azurePubxml
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# dotnet tools
+.dotnet/
+
+# local settings
+appsettings.Development.json
+
+# secrets
+secrets.json

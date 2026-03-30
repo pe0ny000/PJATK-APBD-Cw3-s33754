@@ -111,7 +111,7 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie07_LiczbaAktywnychZapisow()
     {
-        int count =DaneUczelni.Zapisy.Count(e => e.CzyAktywny);
+        int count = DaneUczelni.Zapisy.Count(e => e.CzyAktywny);
         yield return count.ToString();
     }
 
@@ -158,7 +158,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie10_DrugaStronaPrzedmiotow()
     {
-        throw Niezaimplementowano(nameof(Zadanie10_DrugaStronaPrzedmiotow));
+        int pageSize = 2;
+        int page = 2; // druga strona
+
+        return DaneUczelni.Przedmioty.OrderBy(e => e.Nazwa).Skip((page - 1) * pageSize).Take(pageSize)
+            .Select(e => $"{e.Nazwa}, {e.Kategoria}");
     }
 
     /// <summary>
@@ -173,7 +177,8 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie11_PolaczStudentowIZapisy()
     {
-        throw Niezaimplementowano(nameof(Zadanie11_PolaczStudentowIZapisy));
+        return DaneUczelni.Studenci.Join(DaneUczelni.Zapisy, e => e.Id, d => d.StudentId,
+            (student, zapis) => $"{student.Imie} {student.Nazwisko}, {zapis.DataZapisu}");
     }
 
     /// <summary>
@@ -189,7 +194,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie12_ParyStudentPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie12_ParyStudentPrzedmiot));
+        return DaneUczelni.Zapisy
+            .Join(DaneUczelni.Studenci, z => z.StudentId, s => s.Id, (zapis, student) => new { zapis, student }).Join(
+                DaneUczelni.Przedmioty, f => f.zapis.PrzedmiotId, p => p.Id,
+                (f, przedmiot) => $"{f.student.Imie} {f.student.Nazwisko}, {przedmiot.Nazwa}"
+            );
     }
 
     /// <summary>
@@ -204,7 +213,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie13_GrupowanieZapisowWedlugPrzedmiotu()
     {
-        throw Niezaimplementowano(nameof(Zadanie13_GrupowanieZapisowWedlugPrzedmiotu));
+        return DaneUczelni.Zapisy.Join(DaneUczelni.Przedmioty, zapis => zapis.PrzedmiotId, p => p.Id,
+                (zapis, przedmiot) => new { zapis, przedmiot }).GroupBy(e => e.przedmiot.Nazwa)
+            .Select(g => $"{g.Key}-{g.Count()}");
     }
 
     /// <summary>
@@ -221,7 +232,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie14_SredniaOcenaNaPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie14_SredniaOcenaNaPrzedmiot));
+        return DaneUczelni.Zapisy.Join(DaneUczelni.Przedmioty, zapis => zapis.PrzedmiotId, p => p.Id,
+                (zapis, przedmiot) => new { zapis, przedmiot }).Where(e => e.zapis.OcenaKoncowa is not null)
+            .GroupBy(g => g.przedmiot.Nazwa).Select(g => $"{g.Key}, {g.Average(e => e.zapis.OcenaKoncowa)}");
     }
 
     /// <summary>
@@ -237,7 +250,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie15_ProwadzacyILiczbaPrzedmiotow()
     {
-        throw Niezaimplementowano(nameof(Zadanie15_ProwadzacyILiczbaPrzedmiotow));
+        return DaneUczelni.Prowadzacy
+            .Join(DaneUczelni.Przedmioty, prowadzacy => prowadzacy.Id, przedmiot => przedmiot.ProwadzacyId,
+                (prowadzacy, przedmiot) => new { prowadzacy, przedmiot }
+            ).GroupBy(g => new { g.prowadzacy.Imie, g.prowadzacy.Nazwisko })
+            .Select(g => $"{g.Key.Imie} {g.Key.Nazwisko}, {g.Count()}");
     }
 
     /// <summary>
@@ -254,8 +271,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie16_NajwyzszaOcenaKazdegoStudenta()
     {
-        throw Niezaimplementowano(nameof(Zadanie16_NajwyzszaOcenaKazdegoStudenta));
-    }
+        return DaneUczelni.Studenci
+            .Join(DaneUczelni.Zapisy, student => student.Id, z => z.StudentId, (student, zapis) => new { student, zapis })
+            .Where(e => e.zapis.OcenaKoncowa is not null)
+            .GroupBy(e => new { e.student.Imie, e.student.Nazwisko })
+            .Select(g => $"{g.Key.Imie} {g.Key.Nazwisko}, {g.Max(e => e.zapis.OcenaKoncowa)}"); }
 
     /// <summary>
     /// Wyzwanie:

@@ -158,11 +158,7 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie10_DrugaStronaPrzedmiotow()
     {
-        int pageSize = 2;
-        int page = 2; // druga strona
-
-        return DaneUczelni.Przedmioty.OrderBy(e => e.Nazwa).Skip((page - 1) * pageSize).Take(pageSize)
-            .Select(e => $"{e.Nazwa}, {e.Kategoria}");
+        return DaneUczelni.Przedmioty.OrderBy(e => e.Nazwa).Skip(2).Take(2).Select(e => $"{e.Nazwa}, {e.Kategoria}");
     }
 
     /// <summary>

@@ -63,7 +63,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie04_PierwszyPrzedmiotAnalityczny()
     {
-        throw Niezaimplementowano(nameof(Zadanie04_PierwszyPrzedmiotAnalityczny));
+        var result = DaneUczelni.Przedmioty.Where(e => e.Kategoria == "Analytics")
+            .Select(e => $"{e.Nazwa} {e.DataStartu}").FirstOrDefault();
+        return [result == null ? "Brak" : result];
     }
 
     /// <summary>
@@ -80,7 +82,7 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie05_CzyIstniejeNieaktywneZapisanie()
     {
-        throw Niezaimplementowano(nameof(Zadanie05_CzyIstniejeNieaktywneZapisanie));
+        return [DaneUczelni.Zapisy.Any(e => !e.CzyAktywny) ? "True" : "False"];
     }
 
     /// <summary>
@@ -95,7 +97,7 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie06_CzyWszyscyProwadzacyMajaKatedre()
     {
-        throw Niezaimplementowano(nameof(Zadanie06_CzyWszyscyProwadzacyMajaKatedre));
+        return [DaneUczelni.Prowadzacy.All(e => e.Katedra != null) ? "True" : "False"];
     }
 
     /// <summary>
@@ -109,7 +111,8 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie07_LiczbaAktywnychZapisow()
     {
-        throw Niezaimplementowano(nameof(Zadanie07_LiczbaAktywnychZapisow));
+        int count =DaneUczelni.Zapisy.Count(e => e.CzyAktywny);
+        yield return count.ToString();
     }
 
     /// <summary>
@@ -123,7 +126,7 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie08_UnikalneMiastaStudentow()
     {
-        throw Niezaimplementowano(nameof(Zadanie08_UnikalneMiastaStudentow));
+        return DaneUczelni.Studenci.Select(e => e.Miasto).Distinct().OrderBy(e => e);
     }
 
     /// <summary>
@@ -138,7 +141,8 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie09_TrzyNajnowszeZapisy()
     {
-        throw Niezaimplementowano(nameof(Zadanie09_TrzyNajnowszeZapisy));
+        return DaneUczelni.Zapisy.OrderByDescending(e => e.DataZapisu).Take(3)
+            .Select(e => $"{e.DataZapisu}, {e.StudentId}, {e.PrzedmiotId}");
     }
 
     /// <summary>
